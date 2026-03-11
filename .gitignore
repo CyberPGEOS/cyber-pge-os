@@ -1,0 +1,33 @@
+# -------------------------------------------------------------------------
+# PROJETO: PROJECT GENESIS ENGINE (PGE)
+# ARQUIVO: .gitignore
+# GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
+# -------------------------------------------------------------------------
+
+# Dependências (O maior "lixo" técnico)
+node_modules/
+jspm_packages/
+
+# Artefatos de Build (Arquivos gerados pelo tsc)
+dist/
+build/
+*.tsbuildinfo
+
+# Variáveis de Ambiente e Segredos (Segurança Supabase)
+.env
+.env.local
+.env.*.local
+
+# Logs e Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Cache de Ferramentas
+.eslintcache
+.cache/
+
+# Conhecimento Local (Opcional: se quiser salvar o cérebro do PGE no Git, comente a linha abaixo)
+# pge/knowledge/

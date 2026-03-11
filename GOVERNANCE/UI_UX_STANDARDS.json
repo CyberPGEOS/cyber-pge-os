@@ -1,0 +1,14 @@
+{
+  "project": "ConnectionCyberOS Ecosystem",
+  "styling": {
+    "framework": "Tailwind CSS",
+    "theme": "Dark Mode Priority",
+    "colors": {
+      "primary": "#00f2ff",
+      "background": "#000000",
+      "surface": "#1a1a1a"
+    }
+  },
+  "components": "Lucide React Icons, Shadcn/UI (Radix)",
+  "layout_rules": "Split-View (40/60) para players, Modo Cinema z-50"
+}
