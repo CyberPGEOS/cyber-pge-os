@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && tsc",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "pge:local": "node dist/cli.js",
