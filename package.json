@@ -3,17 +3,18 @@
   "version": "1.0.0",
   "description": "Project Genesis Engine - Orquestrador Corporativo ConnectionCyberOS",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/cli.js",
   "bin": {
     "pge": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/cli.js",
-    "dev": "ts-node src/cli.ts",
+    "dev": "next dev",
+    "build": "next build && tsc",
+    "start": "next start",
+    "lint": "next lint",
+    "pge:local": "node dist/cli.js",
     "check": "npm run lint && npm run type-check",
-    "type-check": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -23,13 +24,21 @@
     "crypto": "^1.0.1",
     "dotenv": "^17.3.1",
     "fs-extra": "^11.1.1",
-    "lucide-react": "^0.577.0"
+    "lucide-react": "^0.577.0",
+    "next": "15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^20.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
     "eslint": "^8.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.0"
