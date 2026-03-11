@@ -1,0 +1,30 @@
+{
+  "project": "PROJECT GENESIS ENGINE (PGE)",
+  "version": "1.0.0",
+  "enforcement_level": "MAXIMUM_RIGOR",
+  "core_principles": {
+    "validation_start": "LINE_ZERO",
+    "deployment_target": "VERCEL_PRODUCTION",
+    "database_target": "SUPABASE_RLS",
+    "version_control": "GITHUB_ACTIONS"
+  },
+  "mandatory_checkpoints": [
+    {
+      "step": "1. Imports Compliance",
+      "rule": "Nenhum import relativo pode conter extensões .js ou .ts para evitar conflitos de Bundler (Next.js/Webpack)."
+    },
+    {
+      "step": "2. Environment Isolation",
+      "rule": "Toda variável de ambiente deve ser validada localmente e espelhada no painel Vercel antes do primeiro commit do módulo."
+    },
+    {
+      "step": "3. Hybrid Resolution",
+      "rule": "O tsconfig.json deve obrigatoriamente usar 'moduleResolution: bundler' para suportar CLI e Web simultaneamente."
+    },
+    {
+      "step": "4. Build Integrity",
+      "rule": "Nenhum código será considerado 'Concluído' sem o status 'Ready' (Verde) na Vercel."
+    }
+  ],
+  "persona_instructions": "Atuar como Dev Sênior Full Stack sob supervisão do Chief Architect. Proibido avançar tópicos sem validação de logs de build."
+}
