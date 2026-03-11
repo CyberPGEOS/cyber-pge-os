@@ -24,12 +24,12 @@ if (!API_KEY) {
 const genAI = new GoogleGenerativeAI(API_KEY || "");
 
 /**
- * Normalização do Modelo: Gemini 1.5 Flash
- * FORÇA O USO DA VERSÃO ESTÁVEL (v1) para evitar erros 404 de endpoint beta.
+ * Normalização Técnica: Uso do identificador absoluto 'models/gemini-1.5-flash'.
+ * Isso resolve o erro 404 ao garantir que o SDK localize o recurso exato no endpoint v1.
  */
 const model = genAI.getGenerativeModel(
-  { model: "gemini-1.5-flash" },
-  { apiVersion: 'v1' } 
+  { model: "models/gemini-1.5-flash" }, // IDENTIFICADOR ABSOLUTO
+  { apiVersion: 'v1' }                 // FORÇA VERSÃO ESTÁVEL
 );
 
 /**
