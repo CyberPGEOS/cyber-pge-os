@@ -1,0 +1,22 @@
+/*
+-------------------------------------------------------------------------
+PROJETO: PROJECT GENESIS ENGINE (PGE)
+ARQUIVO: E:\Projetos\pge\src\app\globals.css
+OBJETIVO: Injeção de diretivas Tailwind para o Dashboard.
+-------------------------------------------------------------------------
+*/
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #000;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
