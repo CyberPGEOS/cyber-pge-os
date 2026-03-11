@@ -4,10 +4,16 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "jsx": "preserve",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
     "outDir": "./dist",
     "rootDir": "./src",
@@ -18,8 +24,26 @@
     "resolveJsonModule": true,
     "declaration": true,
     "sourceMap": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "pge/knowledge"]
+  "include": [
+    "src/**/*",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "pge/knowledge"
+  ]
 }

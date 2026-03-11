@@ -10,10 +10,10 @@ GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
 'use server'
 
 /**
- * Ajuste técnico PGT-01: Inclusão da extensão .js exigida pelo compilador
- * em modo NodeNext para garantir a resolução do módulo compilado.
+ * Ajuste técnico PGT-01: Remoção da extensão .js para garantir compatibilidade
+ * com o motor de build Next.js/Webpack em ambiente de Dashboard.
  */
-import { supabase } from '../../core/supabase.js'
+import { supabase } from '../../core/supabase'
 
 /**
  * Função: getProjectsDNA
