@@ -9,8 +9,8 @@ GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
 
 import React from 'react'
 import { ShieldCheck, Activity, FolderGit2, Database } from 'lucide-react'
-// Importação validada no Tópico A (necessário incluir .js para conformidade)
-import { getProjectsDNA } from '../modules/knowledge/actions.js'
+// Ajuste técnico: Remoção de extensão para compatibilidade com o Bundle de produção
+import { getProjectsDNA } from '../modules/knowledge/actions'
 
 export default async function Dashboard() {
   const { data: projects, error } = await getProjectsDNA()

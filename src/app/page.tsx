@@ -8,7 +8,7 @@ GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
 */
 
 import React from 'react'
-import Dashboard from '../components/Dashboard.js'
+import Dashboard from '../components/Dashboard'
 
 /**
  * Página Principal: Renderiza o Dashboard de monitoramento de DNA.
