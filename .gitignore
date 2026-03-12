@@ -1,33 +1,39 @@
 # -------------------------------------------------------------------------
 # PROJETO: PROJECT GENESIS ENGINE (PGE)
-# ARQUIVO: .gitignore
+# ARQUIVO: .gitignore (Versão Estabilizada Next.js 15)
 # GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
 # -------------------------------------------------------------------------
 
-# Dependências (O maior "lixo" técnico)
+# Dependências
 node_modules/
-jspm_packages/
 
-# Artefatos de Build (Arquivos gerados pelo tsc)
+# Next.js (Crucial: Impede que o cache local quebre o build na Vercel)
+.next/
+out/
+
+# Build Artefacts
 dist/
 build/
 *.tsbuildinfo
 
-# Variáveis de Ambiente e Segredos (Segurança Supabase)
+# Variáveis de Ambiente (SEGURANÇA MÁXIMA)
 .env
 .env.local
-.env.*.local
+.env.production
+.env.development
+*.env.local
 
 # Logs e Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-logs/
 *.log
+logs/
 
-# Cache de Ferramentas
-.eslintcache
-.cache/
+# Conhecimento PGE (Mantemos as regras, mas ignoramos os logs de prompt)
+pge/knowledge/last_prompt.txt
+# pge/knowledge/  <-- Descomente se não quiser salvar os JSONs locais no Git
 
-# Conhecimento Local (Opcional: se quiser salvar o cérebro do PGE no Git, comente a linha abaixo)
-# pge/knowledge/
+# OS Files
+.DS_Store
+Thumbs.db
