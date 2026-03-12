@@ -2,26 +2,34 @@
 /*
 -------------------------------------------------------------------------
 PROJETO: PROJECT GENESIS ENGINE (PGE)
-MÓDULO: E:\Projetos\PGE\src\cli.ts
-ARQUITETURA: CLI ENGINE (Node.js / TypeScript / Commander)
+ARQUIVO: E:\Projetos\pge\src\cli.ts
+OBJETIVO: Orquestrador com Persistência Cloud (Módulo P200).
 GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
-DESCRIÇÃO: Ponto de entrada oficial (Entry Point) do orquestrador PGE.
+DESCRIÇÃO: Versão Estabilizada com Resolução de Módulos ESM e Persistência.
 -------------------------------------------------------------------------
 */
 
+import dotenv from 'dotenv';
 import { Command } from "commander";
 import chalk from "chalk";
 import fs from "fs";
 import path from "path";
 
+// Carrega variáveis de ambiente (.env) antes de qualquer lógica operacional
+dotenv.config();
+
 // Importação de metadados seguindo Padrão NodeNext
 import pkg from "../package.json" with { type: "json" };
 
-// Injeção de Módulos Operacionais
+/**
+ * INJEÇÃO DE MÓDULOS OPERACIONAIS
+ * Regra Rigorosa: Em ambientes ESM, utilizamos a extensão .js no caminho.
+ */
 import { absorbProject } from "./modules/knowledge/absorb.js";
 import { evolveBlueprint } from "./modules/knowledge/blueprint-evolve.js";
 import { auditArsenal } from "./modules/audit/arsenal.js";
-// Injeção de Camada de Inteligência (Módulo 6)
+
+// Injeção de Camada de Inteligência
 import { PGE_PERSONA, ANALYSIS_BLUEPRINT } from "./modules/knowledge/prompts.js";
 import { supabase } from "./core/supabase.js";
 import { askPGE } from "./core/ai.js";
@@ -45,21 +53,22 @@ program
   });
 
 /* ============================================================
-   COMANDO: pge absorb <dir>
-   DESCRIÇÃO: Absorve conhecimento e gera Blueprint Inteligente.
+   COMANDO: pge absorb <dir> (VERSÃO EVOLUÍDA P200)
+   DESCRIÇÃO: Absorve conhecimento local e persiste na Nuvem.
    ============================================================ */
 program
   .command("absorb")
-  .description("Absorve conhecimento de um projeto existente")
+  .description("Absorve o DNA local e persiste na Nuvem Supabase")
   .argument("<dir>", "Diretório do projeto")
   .action(async (dir) => {
     const target = path.resolve(dir);
-    console.log(chalk.cyan("\n[PGE] Absorvendo projeto:"), chalk.white(target));
+    console.log(chalk.cyan("\n[P100] LENDO DNA LOCAL:"), chalk.white(target));
     
+    // 1. Absorção Local (Disco Rígido)
     const summary = await absorbProject(target);
     
     if (summary) {
-      console.log(chalk.green("\n[PGE] Resumo da absorção:"));
+      console.log(chalk.green("\n[PGE] Resumo da Extração de DNA:"));
       console.log(chalk.gray(JSON.stringify(summary, null, 2)));
 
       // Injeção de Contexto de Governança
@@ -67,20 +76,44 @@ program
       let govContext = "Nenhuma norma específica encontrada.";
 
       if (fs.existsSync(govDir)) {
-          const devStandards = fs.readFileSync(path.join(govDir, "DEV_STANDARDS.md"), "utf-8");
-          const uiStandards = fs.readFileSync(path.join(govDir, "UI_UX_STANDARDS.json"), "utf-8");
+          const devPath = path.join(govDir, "DEV_STANDARDS.md");
+          const uiPath = path.join(govDir, "UI_UX_STANDARDS.json");
+          
+          const devStandards = fs.existsSync(devPath) ? fs.readFileSync(devPath, "utf-8") : "N/A";
+          const uiStandards = fs.existsSync(uiPath) ? fs.readFileSync(uiPath, "utf-8") : "N/A";
+          
           govContext = `[REGRAS DEV]:\n${devStandards}\n\n[REGRAS UI/UX]:\n${uiStandards}`;
       }
 
-      // Injeção Funcional: Geração de Prompt de Contexto para IA
+      // 2. Persistência Cloud (Módulo P200)
+      console.log(chalk.yellow("\n[P200] PERSISTINDO NA NUVEM..."));
+      const { error: dbError } = await supabase
+        .from('pge_knowledge')
+        .insert([{
+          project_path: summary.root || target,
+          project_hash: `hash_${Date.now()}`,
+          metadata: {
+            structure: summary.structure,
+            files_count: summary.files_count,
+            timestamp: summary.timestamp,
+            gov_context: govContext
+          }
+        }]);
+
+      if (dbError) {
+        console.log(chalk.red(`[ERRO CLOUD] Falha ao sincronizar: ${dbError.message}`));
+      } else {
+        console.log(chalk.green.bold("\n[SUCESSO] DNA Sincronizado com o Ecossistema ConnectionCyberOS!"));
+      }
+
+      // 3. Consulta de Inteligência
       console.log(chalk.cyan("\n[PGE] Consultando Inteligência Arquitetural..."));
       const promptContext = `${PGE_PERSONA}\n\n${ANALYSIS_BLUEPRINT(summary, govContext)}`;
       
-      // Persistência do prompt gerado para auditoria do Arquiteto
       const promptPath = path.join(process.cwd(), "pge", "knowledge", "last_prompt.txt");
+      fs.mkdirSync(path.dirname(promptPath), { recursive: true });
       fs.writeFileSync(promptPath, promptContext);
       
-      // Chamada da IA para Análise Real-time
       const aiResponse = await askPGE(promptContext);
       
       console.log(chalk.bold.green("\n==============================================="));
@@ -89,7 +122,7 @@ program
       console.log(chalk.white(aiResponse));
       console.log(chalk.bold.green("===============================================\n"));
       
-      console.log(chalk.green(`[OK] Prompt persistido em: ${promptPath}`));
+      console.log(chalk.green(`[OK] DNA persistido para análise em: ${promptPath}`));
     }
   });
 
@@ -153,7 +186,6 @@ program
     for (const dir of dirs) {
         console.log(chalk.gray("\n-----------------------------------------------"));
         console.log(chalk.cyan("[PGE] Absorvendo projeto:"), chalk.white(dir));
-        console.log(chalk.gray("-----------------------------------------------"));
         await absorbProject(dir);
     }
 

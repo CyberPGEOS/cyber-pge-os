@@ -359,11 +359,19 @@
     "UI_UX_STANDARDS.json",
     "GOVERNANCE\\DEV_STANDARDS.md",
     "GOVERNANCE\\UI_UX_STANDARDS.json",
-    "src\\core\\ai.ts"
+    "src\\core\\ai.ts",
+    "GOVERNANCE\\GOVERNANCE_STRICT_RULES.json",
+    "next.config.ts",
+    "pge\\pge\\knowledge\\blueprints\\evolved.md",
+    "pge\\src\\modules\\knowledge\\absorb.ts",
+    "src\\modules\\knowledge\\actions.ts"
   ],
   "structures": [
     "src",
     "src\\core",
-    "src\\modules"
+    "src\\modules",
+    "pge\\src",
+    "pge\\src\\modules",
+    "src\\components"
   ]
 }

@@ -40,15 +40,15 @@ NORMAS DE GOVERNANÇA APLICÁVEIS:
 }
 
 DADOS DO PROJETO ATUAL:
-Caminho: E:\Projetos\pge
-Arquivos Identificados: 16
-Estruturas Encontradas: 3
+Caminho: undefined
+Arquivos Identificados: undefined
+Estruturas Encontradas: undefined
 
 DOCUMENTAÇÃO E CÓDIGO:
-["GOVERNANCE\\DEV_STANDARDS.md","GOVERNANCE\\UI_UX_STANDARDS.json","package-lock.json","package.json","pge\\knowledge\\blueprints\\evolved.md","pge\\knowledge\\patterns.json","pge\\knowledge\\projects.json","src\\cli.ts","src\\core\\ai.ts","src\\core\\supabase.ts","src\\modules\\audit\\arsenal.ts","src\\modules\\knowledge\\absorb.ts","src\\modules\\knowledge\\blueprint-evolve.ts","src\\modules\\knowledge\\prompts.ts","src\\types\\index.ts","tsconfig.json"]
+[]
 
 ESTRUTURAS (src/components/etc):
-["src","src\\core","src\\modules"]
+[]
 
 TAREFA:
 1. Identifique se o projeto segue a Arquitetura de Pastas (Next.js 15 dentro de web/src/).

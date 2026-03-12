@@ -642,5 +642,49 @@
       "src\\core",
       "src\\modules"
     ]
+  },
+  {
+    "path": "E:\\Projetos\\pge",
+    "hash": "9db4d28b168edf48acbfe9fdab85935b224fe6a47ab580b19bcfa63f8d82d961",
+    "docsCount": 21,
+    "structuresCount": 6,
+    "timestamp": "2026-03-12T02:23:13.999Z",
+    "docsFound": [
+      "GOVERNANCE\\DEV_STANDARDS.md",
+      "GOVERNANCE\\GOVERNANCE_STRICT_RULES.json",
+      "GOVERNANCE\\UI_UX_STANDARDS.json",
+      "next.config.ts",
+      "package-lock.json",
+      "package.json",
+      "pge\\knowledge\\blueprints\\evolved.md",
+      "pge\\knowledge\\patterns.json",
+      "pge\\knowledge\\projects.json",
+      "pge\\pge\\knowledge\\blueprints\\evolved.md",
+      "pge\\src\\modules\\knowledge\\absorb.ts",
+      "src\\cli.ts",
+      "src\\core\\ai.ts",
+      "src\\core\\supabase.ts",
+      "src\\modules\\audit\\arsenal.ts",
+      "src\\modules\\knowledge\\absorb.ts",
+      "src\\modules\\knowledge\\actions.ts",
+      "src\\modules\\knowledge\\blueprint-evolve.ts",
+      "src\\modules\\knowledge\\prompts.ts",
+      "src\\types\\index.ts",
+      "tsconfig.json"
+    ],
+    "structuresFound": [
+      "pge\\src",
+      "pge\\src\\modules",
+      "src",
+      "src\\components",
+      "src\\core",
+      "src\\modules"
+    ]
+  },
+  {
+    "path": "E:\\Projetos\\pge",
+    "hash": "3f1332099a3f24b0f43b357d6198316223318a7e0c218932870d998b7bb244fa",
+    "files_count": 31,
+    "timestamp": "2026-03-12T02:53:12.535Z"
   }
 ]
