@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------
 PROJETO: PROJECT GENESIS ENGINE (PGE)
 ARQUIVO: E:\Projetos\pge\src\cli.ts
-OBJETIVO: Orquestrador com Persistência Cloud (Módulo P200).
+OBJETIVO: Orquestrador com Persistência Cloud (Módulo P200) e Ingestão P300.
 GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
 DESCRIÇÃO: Versão Estabilizada com Resolução de Módulos ESM e Persistência.
 -------------------------------------------------------------------------
@@ -25,7 +25,7 @@ import pkg from "../package.json" with { type: "json" };
  * INJEÇÃO DE MÓDULOS OPERACIONAIS
  * Regra Rigorosa: Em ambientes ESM, utilizamos a extensão .js no caminho.
  */
-import { absorbProject } from "./modules/knowledge/absorb.js";
+import { absorbProject, deepAbsorb } from "./modules/knowledge/absorb.js";
 import { evolveBlueprint } from "./modules/knowledge/blueprint-evolve.js";
 import { auditArsenal } from "./modules/audit/arsenal.js";
 
@@ -53,18 +53,18 @@ program
   });
 
 /* ============================================================
-   COMANDO: pge absorb <dir> (VERSÃO EVOLUÍDA P200)
+   COMANDO: pge absorb <dir> (VERSÃO EVOLUÍDA P200 + P300)
    DESCRIÇÃO: Absorve conhecimento local e persiste na Nuvem.
    ============================================================ */
 program
   .command("absorb")
-  .description("Absorve o DNA local e persiste na Nuvem Supabase")
+  .description("Absorve o DNA local, conteúdo pedagógico e persiste no Supabase")
   .argument("<dir>", "Diretório do projeto")
   .action(async (dir) => {
     const target = path.resolve(dir);
-    console.log(chalk.cyan("\n[P100] LENDO DNA LOCAL:"), chalk.white(target));
+    console.log(chalk.bold.cyan(`\n[PGE] INICIANDO CICLO DE ABSORÇÃO EM: ${target}`));
     
-    // 1. Absorção Local (Disco Rígido)
+    // 1. Absorção Local e Estrutural (Disco Rígido)
     const summary = await absorbProject(target);
     
     if (summary) {
@@ -86,7 +86,7 @@ program
       }
 
       // 2. Persistência Cloud (Módulo P200)
-      console.log(chalk.yellow("\n[P200] PERSISTINDO NA NUVEM..."));
+      console.log(chalk.yellow("\n[P200] PERSISTINDO DNA ESTRUTURAL NA NUVEM..."));
       const { error: dbError } = await supabase
         .from('pge_knowledge')
         .insert([{
@@ -101,12 +101,17 @@ program
         }]);
 
       if (dbError) {
-        console.log(chalk.red(`[ERRO CLOUD] Falha ao sincronizar: ${dbError.message}`));
+        console.log(chalk.red(`[ERRO CLOUD] Falha ao sincronizar DNA: ${dbError.message}`));
       } else {
         console.log(chalk.green.bold("\n[SUCESSO] DNA Sincronizado com o Ecossistema ConnectionCyberOS!"));
       }
 
-      // 3. Consulta de Inteligência
+      // 3. Absorção Profunda de Conteúdo (Módulo P300)
+      console.log(chalk.yellow(`\n[P300] INICIANDO ANÁLISE DE CONTEÚDO PEDAGÓGICO...`));
+      await processContent(summary.structure, target);
+      console.log(chalk.bold.green(`\n[SUCESSO] Ciclo de vida completo para o DNA: ${target}`));
+
+      // 4. Consulta de Inteligência
       console.log(chalk.cyan("\n[PGE] Consultando Inteligência Arquitetural..."));
       const promptContext = `${PGE_PERSONA}\n\n${ANALYSIS_BLUEPRINT(summary, govContext)}`;
       
@@ -195,6 +200,25 @@ program
     console.log(chalk.bold.green("   Varredura concluída com sucesso!"));
     console.log(chalk.bold.green("==============================================="));
 });
+
+/**
+ * Função Auxiliar para Processamento de Conteúdo (Módulo P300)
+ * Varre a estrutura gerada pelo absorbProject e chama o deepAbsorb para arquivos MD/TXT.
+ */
+async function processContent(node: any, basePath: string) {
+  const currentFullPath = path.join(basePath, node.path || "");
+
+  if (node.type === 'file') {
+    const ext = path.extname(node.name).toLowerCase();
+    if (ext === '.md' || ext === '.txt') {
+      await deepAbsorb(currentFullPath);
+    }
+  } else if (node.type === 'directory' && node.children) {
+    for (const child of node.children) {
+      await processContent(child, basePath);
+    }
+  }
+}
 
 // Ação Padrão (Banner de Status)
 program.action(() => {

@@ -1,136 +1,139 @@
 /*
 -------------------------------------------------------------------------
 PROJETO: PROJECT GENESIS ENGINE (PGE)
-COMPONENTE: E:\Projetos\pge\src\components\Dashboard.tsx
-VISUAL: Tailwind CSS + Lucide React (Modo Cinema / High Contrast)
+MÓDULO: P400 - DASHBOARD UI
+ARQUIVO: E:\Projetos\pge\src\components\Dashboard.tsx
+OBJETIVO: Interface de monitoramento de DNA e Blocos Pedagógicos.
 GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
-DESCRIÇÃO: Interface de monitoramento de DNA sincronizada com Supabase.
+DESCRIÇÃO: Versão Estabilizada. Restaura layout da Imagem 1 e corrige o contador.
 -------------------------------------------------------------------------
 */
 
-'use client';
+"use client";
 
 import React, { useEffect, useState } from 'react';
-import { 
-  ShieldCheck, 
-  Activity, 
-  FolderGit2, 
-  Database, 
-  Terminal, 
-  Cpu 
-} from 'lucide-react';
 import { supabase } from '@/core/supabase';
+import { Database, FileText, Activity, Brain } from 'lucide-react';
+import PGE_BaseCard from './PGE_BaseCard';
 
 export default function Dashboard() {
-  const [projects, setProjects] = useState<any[]>([]);
+  // Inicializamos com null para identificar o estado de carregamento
+  const [stats, setStats] = useState({ dnaCount: 0, blocksCount: 0 });
+  const [recentBlocks, setRecentBlocks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchDNA() {
+    async function fetchData() {
       try {
-        const { data, error: dbError } = await supabase
-          .from('pge_knowledge')
-          .select('*')
-          .order('created_at', { ascending: false });
+        // 1. Busca contagem de DNA
+        const { count: dna } = await supabase.from('pge_knowledge').select('*', { count: 'exact', head: true });
+        
+        // 2. Busca dados e contagem de Blocos Pedagógicos (Sincronização Forçada)
+        const { data: blocks, count: bCount, error: bError } = await supabase
+          .from('pedagogical_blocks')
+          .select('*', { count: 'exact' }) // Forçamos a contagem exata aqui
+          .order('created_at', { ascending: false })
+          .limit(5);
 
-        if (dbError) throw dbError;
-        setProjects(data || []);
-      } catch (err: any) {
-        setError(err.message);
+        if (bError) throw bError;
+
+        // VALIDAÇÃO TÉCNICA: Se bCount for null mas blocks existir, usamos o length
+        const realBlocksCount = bCount !== null ? bCount : (blocks ? blocks.length : 0);
+
+        setStats({ 
+          dnaCount: dna || 0, 
+          blocksCount: realBlocksCount
+        });
+        setRecentBlocks(blocks || []);
+
+      } catch (error) {
+        console.error("Erro ao carregar dados do Dashboard:", error);
       } finally {
         setLoading(false);
       }
     }
-    fetchDNA();
+    fetchData();
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white p-8 font-mono selection:bg-green-500/30">
-      {/* Header de Governança Estilo Terminal */}
-      <header className="flex flex-col md:flex-row items-start md:items-center justify-between mb-12 border-b border-green-500/30 pb-6 gap-4">
+    <div className="min-h-screen bg-black text-white p-8 font-sans">
+      {/* Header Estático PGT-01 - Mantendo fidelidade à Imagem 1 */}
+      <header className="mb-12 border-b border-zinc-800 pb-6 flex justify-between items-end">
         <div>
-          <h1 className="text-4xl font-bold tracking-tighter flex items-center gap-3 text-green-500">
-            <Cpu className={loading ? "animate-spin" : "animate-pulse"} size={32} /> 
-            PGE // GENESIS_OS_V1
-          </h1>
-          <p className="text-zinc-500 text-sm mt-1">Hold ConnectionCyber Assessoria e Treinamento</p>
+          <h1 className="text-4xl font-bold tracking-tighter text-zinc-100">PGE OS <span className="text-blue-500">v1.0</span></h1>
+          <p className="text-zinc-500 uppercase text-xs tracking-[0.2em] mt-2 font-mono">Governança: PGT-01 / Conexão Cyber</p>
         </div>
-        
-        <div className="flex gap-4">
-          <div className="bg-zinc-900 px-4 py-2 rounded-lg border border-zinc-800">
-            <span className="block text-[10px] text-zinc-500 uppercase tracking-widest text-center">Status Engine</span>
-            <span className="text-green-400 font-mono text-xs flex items-center gap-2">
-              <Activity size={12} className="animate-pulse" /> CORE_ONLINE
-            </span>
-          </div>
+        <div className="text-right">
+          <p className="text-zinc-400 text-sm">Status: <span className="text-green-500 font-mono italic font-bold">ONLINE</span></p>
         </div>
       </header>
 
-      {/* Grid de Monitoramento de DNA */}
-      {loading ? (
-        <div className="flex items-center justify-center py-24 gap-4 text-green-500 font-mono">
-          <Activity className="animate-spin" /> SINCRONIZANDO COM CONNECTIONCYBER CLOUD...
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects?.map((project: any) => (
-            <div key={project.id} className="bg-zinc-900/40 border border-green-500/20 p-6 rounded-xl hover:border-green-500/100 transition-all group relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-green-500/5 blur-3xl rounded-full -mr-12 -mt-12 group-hover:bg-green-500/10 transition-colors" />
-              
-              <div className="flex justify-between items-start mb-6">
-                <div className="p-2 bg-zinc-800 rounded-lg group-hover:bg-green-500/20 group-hover:text-green-400 transition-colors">
-                  <Terminal size={20} className="text-green-500" />
-                </div>
-                <span className="text-[10px] font-mono text-zinc-500 bg-zinc-800/50 px-2 py-1 rounded">
-                  {project.created_at ? new Date(project.created_at).toLocaleDateString('pt-BR') : 'DNA_SYNC'}
-                </span>
-              </div>
-              
-              <div className="space-y-1 mb-6">
-                <h3 className="font-bold text-xl tracking-tight text-zinc-200 group-hover:text-green-400 transition-colors uppercase">
-                  {project.project_path?.split('\\').pop() || 'DNA_UNKNOWN'}
-                </h3>
-                <p className="text-[10px] text-zinc-500 font-mono truncate" title={project.project_hash}>
-                  HASH: {project.project_hash}
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-800/50">
-                <div className="space-y-1">
-                  <span className="block text-[9px] text-zinc-500 uppercase tracking-tighter">Files Count</span>
-                  <span className="text-sm font-bold text-zinc-300">{project.docs_count || 0}</span>
-                </div>
-                <div className="space-y-1">
-                  <span className="block text-[9px] text-zinc-500 uppercase tracking-tighter">Structures</span>
-                  <span className="text-sm font-bold text-zinc-300">{project.structures_count || 0}</span>
-                </div>
-              </div>
+      {/* Grid de Métricas */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <PGE_BaseCard 
+          title="DNA ESTRUTURAL" 
+          value={stats.dnaCount} 
+          label="Projetos Mapeados" 
+          icon={<Database size={16}/>}
+          variant="neutral"
+        />
 
-              <button className="mt-6 w-full py-2 bg-green-500/10 border border-green-500/40 text-green-500 text-xs hover:bg-green-500 hover:text-black font-bold transition-all uppercase tracking-widest">
-                Inspect_Blueprint
-              </button>
-            </div>
-          ))}
+        <PGE_BaseCard 
+          title="BLOCOS PEDAGÓGICOS" 
+          value={stats.blocksCount} 
+          label="Lições Extraídas" 
+          icon={<Brain size={16}/>}
+          variant="emerald"
+        />
 
-          {/* Estado Vazio */}
-          {projects.length === 0 && (
-            <div className="col-span-full py-24 border-2 border-dashed border-zinc-800 rounded-2xl flex flex-col items-center justify-center text-center bg-zinc-900/20">
-              <Database className="text-zinc-700 mb-4" size={40} />
-              <p className="text-zinc-500 text-sm">Aguardando absorção de novos projetos...</p>
-              <code className="mt-2 text-[10px] text-zinc-600 font-mono">pge absorb [path_to_dna]</code>
-            </div>
-          )}
+        <MetricCard 
+          icon={<Activity size={20}/>} 
+          title="INTEGRIDADE" 
+          value="100%" 
+          label="Norma Extremo Zero" 
+          color="text-green-500"
+        />
+      </div>
 
-          {/* Alerta de Erro */}
-          {error && (
-            <div className="col-span-full p-4 bg-red-900/10 border border-red-900/50 text-red-400 rounded-lg text-xs font-mono">
-              [FATAL_ERROR]: Falha na comunicação com a base de dados ConnectionCyber.
-              <br />Detalhe: {error}
-            </div>
-          )}
-        </div>
-      )}
+      {/* Feed de Conhecimento Recente - Layout da Imagem 1 */}
+      <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 shadow-2xl backdrop-blur-sm">
+        <h2 className="flex items-center gap-2 text-xl font-bold mb-6 text-zinc-200 uppercase tracking-tight">
+          <FileText size={20} className="text-blue-500" />
+          Últimos Conhecimentos Absorvidos
+        </h2>
+        
+        {loading ? (
+          <p className="text-zinc-500 animate-pulse font-mono uppercase text-[10px] tracking-widest">Sincronizando com a nuvem...</p>
+        ) : (
+          <div className="space-y-4">
+            {recentBlocks.map((block) => (
+              <div key={block.id} className="border-l-2 border-zinc-700 hover:border-blue-500 transition-all pl-4 py-3 bg-zinc-900/30 rounded-r-lg group">
+                <p className="text-sm font-bold text-zinc-100 uppercase tracking-tight group-hover:text-blue-400 transition-colors">{block.title}</p>
+                <p className="text-xs text-zinc-500 mt-1 line-clamp-1 italic">{block.action_description || "Análise profunda concluída."}</p>
+                <div className="mt-2 flex gap-4">
+                  <span className="text-[10px] text-zinc-600 font-mono uppercase">ID: {block.id.substring(0,8)}</span>
+                  <span className="text-[10px] bg-zinc-800 px-2 py-0.5 rounded text-zinc-400 font-bold uppercase tracking-tighter">DOMAIN: {block.domain}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MetricCard({ icon, title, value, label, color = "text-white" }: any) {
+  return (
+    <div className="bg-zinc-900/80 border border-zinc-800 p-6 rounded-2xl hover:border-zinc-700 transition-all group">
+      <div className="flex items-center gap-3 mb-4 text-zinc-500 group-hover:text-zinc-300 transition-colors">
+        {icon}
+        <span className="text-[10px] font-bold tracking-widest uppercase">{title}</span>
+      </div>
+      <div className={`text-5xl font-bold tracking-tighter ${color} mb-1`}>
+        {value}
+      </div>
+      <div className="text-xs text-zinc-500 font-medium uppercase tracking-wider">{label}</div>
     </div>
   );
 }

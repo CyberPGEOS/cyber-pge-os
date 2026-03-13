@@ -18,13 +18,25 @@ import { ProjectSummary, KnowledgePatterns } from "../../types/index.js";
 
 /**
  * Interface que define a estrutura do DNA extraído.
- * Exportação Nomeada para tipagem rigorosa no CLI.
  */
 export interface ProjectDNA {
   root: string;
   timestamp: string;
   structure: any;
   files_count: number;
+}
+
+/**
+ * Interface para a Metodologia de Ensino Pedagógica Personalizada.
+ */
+interface PedagogicalBlock {
+  title: string;
+  action_description: string;
+  technical_instruction: string;
+  technical_meaning: string;
+  educational_justification: string;
+  pedagogical_commentary: string;
+  mini_challenge: string;
 }
 
 const KNOWLEDGE_DIR = path.join(process.cwd(), "pge", "knowledge");
@@ -68,6 +80,15 @@ function computeHash(structure: any): string {
 }
 
 /**
+ * Auxiliar para extrair seções baseadas nos seus marcadores (Ex: #### Ação:)
+ */
+function extractSection(content: string, sectionName: string): string {
+  const regex = new RegExp(`${sectionName}:?\\s*([\\s\\S]*?)(?=(####|###|##|#|📌|$))`, 'i');
+  const match = content.match(regex);
+  return match ? match[1].trim() : '';
+}
+
+/**
  * Função Privada de Mapeamento: Constrói a árvore de diretórios recursivamente.
  */
 async function mapDirectory(currentPath: string, relBase = ""): Promise<any> {
@@ -92,6 +113,46 @@ async function mapDirectory(currentPath: string, relBase = ""): Promise<any> {
   return info;
 }
 
+/* ============================================================
+   ROTINAS DE ABSORÇÃO (NOMEADAS)
+   ============================================================ */
+
+/**
+ * EXPORTAÇÃO NOMEADA: deepAbsorb
+ * Analisa o conteúdo interno de arquivos para extrair blocos pedagógicos.
+ */
+export async function deepAbsorb(filePath: string) {
+  try {
+    const content = await fs.readFile(filePath, 'utf-8');
+    const fileName = path.basename(filePath);
+
+    console.log(chalk.blue(`[P100] Analisando DNA Pedagógico: ${fileName}`));
+
+    const block: Partial<PedagogicalBlock> = {
+      title: fileName.replace('.md', '').replace('.txt', ''),
+      action_description: extractSection(content, 'Ação'),
+      technical_instruction: extractSection(content, 'Instrução Técnica'),
+      technical_meaning: extractSection(content, 'Significado Técnico'),
+      educational_justification: extractSection(content, 'Justificativa Educacional'),
+      pedagogical_commentary: extractSection(content, 'Comentário Pedagógico'),
+      mini_challenge: extractSection(content, 'Mini Desafio')
+    };
+
+    const { error } = await supabase
+      .from('pedagogical_blocks')
+      .upsert([{ 
+        ...block,
+        metadata: { source_path: filePath, absorbed_at: new Date().toISOString() }
+      }], { onConflict: 'title' });
+
+    if (error) throw error;
+
+    console.log(chalk.green(`[SUCESSO] Bloco "${block.title}" integrado ao cérebro.`));
+  } catch (err: any) {
+    console.error(chalk.red(`[ERRO] Falha na absorção de ${filePath}: ${err.message}`));
+  }
+}
+
 /**
  * EXPORTAÇÃO NOMEADA: absorbProject
  * Realiza a varredura atômica e registra o DNA no disco e na nuvem.
@@ -100,16 +161,15 @@ export async function absorbProject(targetPath: string): Promise<ProjectDNA | nu
   ensureKnowledge();
 
   try {
-    // Validação de Existência (Zero Alucinação de Caminho)
     if (!(await fs.pathExists(targetPath))) {
       console.log(chalk.red(`[P100][ERRO] Caminho não localizado: ${targetPath}`));
       return null;
     }
 
+    console.log(chalk.cyan(`[P100] Lendo DNA LOCAL: ${targetPath}`));
     console.log(chalk.cyan(`[P100] Mapeando estrutura...`));
     const structure = await mapDirectory(targetPath);
     
-    // Extração de métricas de densidade
     const fileMatches = JSON.stringify(structure).match(/"type":"file"/g);
     const files_count = fileMatches ? fileMatches.length : 0;
     const projectHash = computeHash(structure);
@@ -121,7 +181,6 @@ export async function absorbProject(targetPath: string): Promise<ProjectDNA | nu
       files_count: files_count
     };
 
-    // 1. PERSISTÊNCIA LOCAL (Audit Log)
     const projects = await fs.readJson(PROJECTS_FILE);
     const alreadyExistsLocally = projects.some((p: any) => p.hash === projectHash);
 
@@ -135,7 +194,6 @@ export async function absorbProject(targetPath: string): Promise<ProjectDNA | nu
       await fs.writeJson(PROJECTS_FILE, projects, { spaces: 2 });
     }
 
-    // 2. SINCRONIZAÇÃO CLOUD (Supabase)
     console.log(chalk.yellow(`[P200][CLOUD] Sincronizando DNA no Supabase...`));
     
     const { error } = await supabase

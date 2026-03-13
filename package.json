@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/cli.js",
   "bin": {
-    "pge": "./dist/cli.js"
+    "pge": "./src/cli.js"
   },
   "scripts": {
     "dev": "next dev",

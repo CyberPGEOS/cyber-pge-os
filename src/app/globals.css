@@ -1,8 +1,11 @@
 /*
 -------------------------------------------------------------------------
 PROJETO: PROJECT GENESIS ENGINE (PGE)
+MÓDULO: P400 - UI ENGINE
 ARQUIVO: E:\Projetos\pge\src\app\globals.css
-OBJETIVO: Injeção de diretivas Tailwind para o Dashboard.
+OBJETIVO: Injeção de diretivas Tailwind e Reset de Governança.
+GOVERNANÇA: PGT-01 (NORMA EXTREMO ZERO)
+DESCRIÇÃO: Versão Estabilizada com suporte a Glassmorphism e Scroll Custom.
 -------------------------------------------------------------------------
 */
 
@@ -11,12 +14,40 @@ OBJETIVO: Injeção de diretivas Tailwind para o Dashboard.
 @tailwind utilities;
 
 :root {
+  --background: #000000;
+  --foreground: #ffffff;
   color-scheme: dark;
 }
 
 body {
-  background-color: #000;
-  color: #fff;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar Corporativa ConnectionCyber (Ultra-fina) */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Camada de Glassmorphism Global (Utilizada pelo PGE_BaseCard) */
+.glass-effect {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
